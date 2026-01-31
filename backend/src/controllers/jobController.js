@@ -1,23 +1,81 @@
 const Job = require("../models/jobModels");
 
 // ✅ Create Job
+// ✅ Create Job with proper validation
 const createJob = async (req, res) => {
   try {
     const { title, description, experience, type, location, status } = req.body;
 
-    if (!title || !description || !experience || !type || !location) {
+    const isValidString = (v) => typeof v === "string" && v.trim().length > 0;
+
+    if (!isValidString(title))
+      return res.status(400).json({ message: "title is required" });
+
+    if (!isValidString(description))
+      return res.status(400).json({ message: "description is required" });
+
+    if (!isValidString(location))
+      return res.status(400).json({ message: "location is required" });
+
+    if (title.trim().length < 3 || title.trim().length > 80) {
       return res.status(400).json({
-        message: "title, description, experience, type, location are required",
+        message: "title must be between 3 and 80 characters",
       });
     }
+
+    if (description.trim().length < 10 || description.trim().length > 5000) {
+      return res.status(400).json({
+        message: "description must be between 10 and 5000 characters",
+      });
+    }
+
+    const exp = Number(experience);
+    if (Number.isNaN(exp) || exp < 0 || exp > 50) {
+      return res.status(400).json({
+        message: "experience must be a valid number between 0 and 50",
+      });
+    }
+
+    const allowedTypes = [
+      "Full-time",
+      "Part-time",
+      "Internship",
+      "Contract",
+      "Freelance",
+    ];
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).json({
+        message: `type must be one of: ${allowedTypes.join(", ")}`,
+      });
+    }
+
+    // ✅ NEW location validation
+    const allowedLocations = ["Remote", "Hybrid", "On-site"];
+    if (!allowedLocations.includes(location)) {
+      return res.status(400).json({
+        message: `location must be one of: ${allowedLocations.join(", ")}`,
+      });
+    }
+
+    const allowedStatus = ["Active", "Inactive", "Closed"];
+    const finalStatus = status || "Active";
+
+    if (!allowedStatus.includes(finalStatus)) {
+      return res.status(400).json({
+        message: `status must be one of: ${allowedStatus.join(", ")}`,
+      });
+    }
+
+    if (!req.user?.id)
+      return res.status(401).json({ message: "Unauthorized" });
 
     const job = await Job.create({
       title: title.trim(),
       description: description.trim(),
-      experience,
+      experience: exp,
       type,
       location,
-      status: status || "Active",
+      status: finalStatus,
       createdBy: req.user.id,
     });
 
@@ -26,10 +84,11 @@ const createJob = async (req, res) => {
       job,
     });
   } catch (error) {
-    console.error("Create Job Error:", error.message);
+    console.error("Create Job Error:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // ✅ Get All Jobs (Search)
 const getAllJobs = async (req, res) => {
