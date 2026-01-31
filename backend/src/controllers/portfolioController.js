@@ -146,13 +146,13 @@ const updatePortfolio = async (req, res) => {
     const { projectName, shortDescription } = req.body;
 
     // ✅ validate length if present
-    if (projectName && projectName.trim().length > 50) {
+    if (projectName && typeof projectName === 'string' && projectName.trim().length > 50) {
       return res.status(400).json({
         message: "Project Name must be maximum 50 characters",
       });
     }
 
-    if (shortDescription && shortDescription.trim().length > 500) {
+    if (shortDescription && typeof shortDescription === 'string' && shortDescription.trim().length > 500) {
       return res.status(400).json({
         message: "Project Description must be maximum 500 characters",
       });

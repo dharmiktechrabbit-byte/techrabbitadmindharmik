@@ -31,7 +31,16 @@ router.get("/", authMiddleware, requireRole("admin"), getAllPortfolios);
 router.get("/:id", authMiddleware, requireRole("admin"), getPortfolioById);
 
 // ✅ Update / Delete
-router.put("/:id", authMiddleware, requireRole("admin"), updatePortfolio);
+router.put(
+  "/:id",
+  authMiddleware,
+  requireRole("admin"),
+  upload.fields([
+    { name: "projectLogo", maxCount: 1 },
+    { name: "projectImage", maxCount: 1 },
+  ]),
+  updatePortfolio
+);
 router.delete("/:id", authMiddleware, requireRole("admin"), deletePortfolio);
 
 router.patch("/:id/status", authMiddleware, requireRole("admin"), updatePortfolioStatus);
