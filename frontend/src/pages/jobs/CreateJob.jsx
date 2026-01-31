@@ -372,6 +372,7 @@ function CreateJob() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
+                        
                         <button
                           onClick={() => handleStatusChange(job._id, job.status)}
                           className={`px-3 py-1 inline-flex text-xs font-medium rounded-full cursor-pointer transition-colors ${job.status === 'Active'
@@ -384,8 +385,9 @@ function CreateJob() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button className="text-gray-600 hover:text-gray-900 mr-3">
-                          <Eye className="h-4 w-4 inline" />
-                        </button>
+                      <Eye className="h-4 w-4 inline" />
+                    </button>
+
                         <button
                           onClick={() => startEdit(job)}
                           className="text-[#25b485] hover:text-[#219972] mr-3"

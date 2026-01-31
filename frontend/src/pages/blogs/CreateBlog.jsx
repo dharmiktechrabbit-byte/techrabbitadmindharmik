@@ -86,6 +86,8 @@ function CreateBlog() {
     }
   };
 
+  const [submitStatus, setSubmitStatus] = useState("PUBLISHED");
+
   // ✅ Submit Blog to API (with image)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,7 +101,9 @@ function CreateBlog() {
       fd.append("metaTitle", formData.metaTitle);
       fd.append("metaDescription", formData.metaDescription);
       fd.append("slug", formData.slug);
-      fd.append("status", "PUBLISHED");
+      
+      // Use the state value for status
+      fd.append("status", submitStatus);
 
       // ✅ tags array
       formData.tags.forEach((tagId) => fd.append("tags[]", tagId));
@@ -112,7 +116,12 @@ function CreateBlog() {
       await createBlogApi(fd);
       await fetchBlogs();
 
-      toast.success("Job updated successfully");
+      // Show different toast messages based on status
+      if (submitStatus === "DRAFT") {
+        toast.success("Blog saved as draft successfully");
+      } else {
+        toast.success("Blog published successfully");
+      }
 
       // ✅ reset form
       setFormData({
@@ -127,8 +136,11 @@ function CreateBlog() {
 
       setBlogImageFile(null);
       setBlogImagePreview("");
+      // Reset submit status to default
+      setSubmitStatus("PUBLISHED");
     } catch (error) {
       console.log("Create Blog Error:", error);
+      toast.error(error);
     }
   };
 
@@ -191,7 +203,7 @@ function CreateBlog() {
 
       setDeleteModal({ isOpen: false, id: null, name: "" });
     } catch (error) {
-      console.log("Delete Blog Error:", error);
+      toast.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -448,10 +460,18 @@ function CreateBlog() {
           </div>
 
           <div className="flex gap-3">
-            <button type="submit" className="btn-primary">
+            <button 
+              type="submit" 
+              className="btn-primary"
+              onClick={() => setSubmitStatus("PUBLISHED")}
+            >
               Publish Blog
             </button>
-            <button type="button" className="btn-secondary">
+            <button 
+              type="submit" 
+              className="btn-secondary"
+              onClick={() => setSubmitStatus("DRAFT")}
+            >
               Save as Draft
             </button>
           </div>
