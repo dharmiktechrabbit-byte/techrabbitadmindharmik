@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -22,15 +22,19 @@ function SignIn() {
             const response = await loginApi(formData);
             // Check for token as the primary indicator of success based on user feedback
             if (response.token) {
-                localStorage.setItem('token', response.token);
-                if (response.admin) {
-                    localStorage.setItem('user', JSON.stringify(response.admin));
-                }
-                toast.success(response.message || 'Welcome back!');
-                navigate('/dashboard');
+                // Store user info temporarily until 2FA is verified
+                localStorage.setItem('tempUser', JSON.stringify({
+                    id: response.admin.id,
+                    email: response.admin.email,
+                    twoFAEnabled: response.admin.twoFAEnabled
+                }));
+                
+                toast.success('Credentials verified! Please complete 2FA.');
+                navigate('/verify-2fa');
             } else {
                 toast.error(response.message || 'Invalid credentials');
             }
+
         } catch (error) {
             toast.error(error || 'Something went wrong. Please try again.');
         } finally {
@@ -100,9 +104,6 @@ function SignIn() {
                                 <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
                                     Password
                                 </label>
-                                {/* <button type="button" className="text-xs font-bold text-[#25b485] hover:text-[#219972] transition-colors">
-                                    Forgot password?
-                                </button> */}
                             </div>
                             <div className="relative group">
                                 <div className="absolute left-4 top-1/2 -translate-y-1/2 transition-colors group-focus-within:text-[#25b485]">

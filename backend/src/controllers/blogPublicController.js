@@ -87,14 +87,15 @@ const getBlogPublicBySlug = async (req, res) => {
 
     if (!slug) return res.status(400).json({ message: "Slug is required" });
 
-    const blog = await Blog.findOne({
-      slug: slug.toLowerCase(),
-      status: "PUBLISHED",
-    })
+    const blog = await Blog.findOneAndUpdate(
+      { slug: slug.toLowerCase(), status: "PUBLISHED" },
+      { $inc: { views: 1 } },
+      { new: true }
+    )
       .populate("category", "name")
       .populate("tags", "name")
       .select(
-        "_id title description slug blogImage blogImageAlt category tags metaTitle metaDescription author createdAt",
+        "_id title description slug blogImage blogImageAlt category tags metaTitle metaDescription author views createdAt",
       );
 
     if (!blog) return res.status(404).json({ message: "Blog not found" });
@@ -109,8 +110,60 @@ const getBlogPublicBySlug = async (req, res) => {
   }
 };
 
+const getBlogDetailsPublic = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({ message: "id is required" });
+    }
+
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ message: "Invalid blog id" });
+    }
+
+    const blog = await Blog.findOneAndUpdate(
+      { _id: id, status: "PUBLISHED" },
+      { $inc: { views: 1 } },
+      { new: true }
+    )
+      .populate("category", "name")
+      .populate("tags", "name")
+      .select(
+        "_id title description slug blogImage blogImageAlt category tags metaTitle metaDescription author views createdAt"
+      );
+
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+
+    // ✅ recent 3 blogs (exclude current blog)
+    const recentBlogs = await Blog.find({
+      status: "PUBLISHED",
+      _id: { $ne: blog._id },
+    })
+      .populate("category", "name")
+      .select("_id title slug blogImage blogImageAlt category createdAt")
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .lean();
+
+    // ✅ total published blogs count
+    const totalBlogs = await Blog.countDocuments({ status: "PUBLISHED" });
+
+    return res.status(200).json({
+      message: "Blog details fetched ✅",
+      blog,
+      recentBlogs,
+      totalBlogs,
+    });
+  } catch (error) {
+    console.error("Blog Details Public Error:", error.message);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   getBlogCategoriesPublic,
   getBlogsPublic,
   getBlogPublicBySlug,
+  getBlogDetailsPublic
 };

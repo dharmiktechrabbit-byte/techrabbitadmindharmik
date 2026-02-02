@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get("/categories", controller.getBlogCategoriesPublic);
 router.get("/", controller.getBlogsPublic);
+router.get("/blog-details", controller.getBlogDetailsPublic);
 router.get("/:slug", controller.getBlogPublicBySlug);
 
 module.exports = router;

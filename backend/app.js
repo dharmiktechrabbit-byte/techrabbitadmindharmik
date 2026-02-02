@@ -8,6 +8,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/admin", require("./src/routes/adminRoutes"));
+app.use("/api/2fa", require("./src/routes/twoFARoutes"));
+
 
 app.use("/api/jobs", require("./src/routes/jobRoutes"));
 

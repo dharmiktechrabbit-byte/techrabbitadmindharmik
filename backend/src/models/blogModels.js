@@ -79,6 +79,11 @@ const blogSchema = new mongoose.Schema(
       default: "Admin",
     },
 
+    views: {
+      type: Number,
+      default: 0,
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",

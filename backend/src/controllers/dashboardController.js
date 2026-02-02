@@ -30,12 +30,15 @@ const getDashboardSummary = async (req, res) => {
     const { start: lastStart, end: lastEnd } = getMonthRange(lastYear, lastMonth);
 
     // ✅ total counts
-    const [totalPortfolios, totalJobs, totalBlogs, totalApplications] =
+    const [totalPortfolios, totalJobs, totalBlogs, totalApplications, totalBlogViews] =
       await Promise.all([
         Portfolio.countDocuments(),
         Job.countDocuments(),
         Blog.countDocuments(),
         JobApplication.countDocuments(),
+        Blog.aggregate([
+          { $group: { _id: null, total: { $sum: "$views" } } }
+        ]).then(res => res[0]?.total || 0),
       ]);
 
     // ✅ current month counts
@@ -89,6 +92,9 @@ const getDashboardSummary = async (req, res) => {
           value: totalApplications,
           changeText: `${appDiff >= 0 ? "+" : ""}${appDiff}`,
         },
+        totalViews: {
+          value: totalBlogViews,
+        }
       },
     });
   } catch (error) {

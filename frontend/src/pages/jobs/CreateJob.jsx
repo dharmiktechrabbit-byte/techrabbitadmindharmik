@@ -1,31 +1,40 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Edit2, Trash2, Eye, MapPin, Clock, Check, X } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Search,
+  Edit2,
+  Trash2,
+  Eye,
+  MapPin,
+  Clock,
+  Check,
+  X,
+} from "lucide-react";
+import toast from "react-hot-toast";
 import {
   getJobPostsApi,
   createJobPostApi,
   deleteJobPostApi,
   updateJobPostApi,
-  changeJobPostStatusApi
-} from '../../api/api';
-import Loader from '../../components/Loader';
-import DeleteModal from '../../components/DeleteModal';
+  changeJobPostStatusApi,
+} from "../../api/api";
+import Loader from "../../components/Loader";
+import DeleteModal from "../../components/DeleteModal";
 
 function CreateJob() {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    experience: '',
-    type: 'Full-time',
-    location: '',
-    status: 'Active'
+    title: "",
+    description: "",
+    experience: "",
+    type: "Full-time",
+    location: "",
+    status: "Active",
   });
 
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false);
@@ -35,7 +44,7 @@ function CreateJob() {
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     id: null,
-    name: ''
+    name: "",
   });
 
   useEffect(() => {
@@ -47,7 +56,7 @@ function CreateJob() {
       const response = await getJobPostsApi();
       setJobs(response.jobs || []);
     } catch (error) {
-      toast.error('Failed to fetch jobs');
+      toast.error("Failed to fetch jobs");
     } finally {
       setIsLoading(false);
     }
@@ -64,20 +73,20 @@ function CreateJob() {
         experience: formData.experience,
         type: formData.type,
         location: formData.location,
-        status: formData.status
+        status: formData.status,
       };
 
       if (isEditing) {
         await updateJobPostApi(jobData, editId);
-        toast.success('Job updated successfully');
+        toast.success("Job updated successfully");
       } else {
         await createJobPostApi(jobData);
-        toast.success('Job created successfully');
+        toast.success("Job created successfully");
       }
       resetForm();
       fetchJobs();
     } catch (error) {
-      toast.error(error || 'Operation failed');
+      toast.error(error || "Operation failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,24 +96,24 @@ function CreateJob() {
     setIsSubmitting(true);
     try {
       await deleteJobPostApi(deleteModal.id);
-      toast.success('Job deleted successfully');
-      setDeleteModal({ isOpen: false, id: null, name: '' });
+      toast.success("Job deleted successfully");
+      setDeleteModal({ isOpen: false, id: null, name: "" });
       fetchJobs();
     } catch (error) {
-      toast.error(error || 'Delete failed');
+      toast.error(error || "Delete failed");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleStatusChange = async (jobId, currentStatus) => {
-    const newStatus = currentStatus === 'Active' ? 'Closed' : 'Active';
+    const newStatus = currentStatus === "Active" ? "Closed" : "Active";
     try {
       await changeJobPostStatusApi({ status: newStatus }, jobId);
       toast.success(`Job status changed to ${newStatus}`);
       fetchJobs();
     } catch (error) {
-      toast.error(error || 'Status change failed');
+      toast.error(error || "Status change failed");
     }
   };
 
@@ -113,37 +122,37 @@ function CreateJob() {
     setEditId(job._id);
     setFormData({
       title: job.title,
-      description: job.description || '',
+      description: job.description || "",
       experience: job.experience,
       type: job.type,
       location: job.location,
-      status: job.status
+      status: job.status,
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const resetForm = () => {
     setIsEditing(false);
     setEditId(null);
     setFormData({
-      title: '',
-      description: '',
-      experience: '',
-      type: 'Full-time',
-      location: '',
-      status: 'Active'
+      title: "",
+      description: "",
+      experience: "",
+      type: "Full-time",
+      location: "",
+      status: "Active",
     });
   };
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const filteredJobs = jobs.filter(j =>
-    j.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredJobs = jobs.filter((j) =>
+    j.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -155,7 +164,7 @@ function CreateJob() {
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {isEditing ? 'Edit Job Post' : 'Create Job Post'}
+            {isEditing ? "Edit Job Post" : "Create Job Post"}
           </h2>
           {isEditing && (
             <button
@@ -170,7 +179,10 @@ function CreateJob() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Job Title
               </label>
               <input
@@ -187,7 +199,10 @@ function CreateJob() {
             </div>
 
             <div>
-              <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="experience"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Experience Required
               </label>
               <input
@@ -205,7 +220,10 @@ function CreateJob() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Job Description
             </label>
             <textarea
@@ -223,7 +241,10 @@ function CreateJob() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="type"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Job Type
               </label>
               <select
@@ -244,7 +265,10 @@ function CreateJob() {
             </div>
 
             <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="location"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Location
               </label>
               <input
@@ -269,9 +293,7 @@ function CreateJob() {
             {isSubmitting ? (
               <Loader size="small" className="text-white!" />
             ) : (
-              <>
-                {isEditing ? <Check className="h-5 w-5" /> : 'Post Job'}
-              </>
+              <>{isEditing ? <Check className="h-5 w-5" /> : "Post Job"}</>
             )}
           </button>
         </form>
@@ -283,15 +305,15 @@ function CreateJob() {
         transition={{ delay: 0.1 }}
         className="card"
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <h2 className="text-xl font-bold text-gray-900">Job Posts</h2>
-          <div className="relative">
+          <div className="relative w-full md:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full md:w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="Search jobs..."
             />
           </div>
@@ -333,12 +355,15 @@ function CreateJob() {
                 </tr>
               ) : filteredJobs.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
+                  <td
+                    colSpan="7"
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
                     No jobs found
                   </td>
                 </tr>
               ) : (
-                <AnimatePresence mode='popLayout'>
+                <AnimatePresence mode="popLayout">
                   {filteredJobs.map((job, index) => (
                     <motion.tr
                       key={job._id}
@@ -349,7 +374,9 @@ function CreateJob() {
                       className="table-row"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{job.title}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {job.title}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center text-sm text-gray-600">
@@ -372,21 +399,23 @@ function CreateJob() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        
                         <button
-                          onClick={() => handleStatusChange(job._id, job.status)}
-                          className={`px-3 py-1 inline-flex text-xs font-medium rounded-full cursor-pointer transition-colors ${job.status === 'Active'
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                            : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                            }`}
+                          onClick={() =>
+                            handleStatusChange(job._id, job.status)
+                          }
+                          className={`px-3 py-1 inline-flex text-xs font-medium rounded-full cursor-pointer transition-colors ${
+                            job.status === "Active"
+                              ? "bg-green-100 text-green-800 hover:bg-green-200"
+                              : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                          }`}
                         >
                           {job.status}
                         </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button className="text-gray-600 hover:text-gray-900 mr-3">
-                      <Eye className="h-4 w-4 inline" />
-                    </button>
+                          <Eye className="h-4 w-4 inline" />
+                        </button>
 
                         <button
                           onClick={() => startEdit(job)}
@@ -395,11 +424,13 @@ function CreateJob() {
                           <Edit2 className="h-4 w-4 inline" />
                         </button>
                         <button
-                          onClick={() => setDeleteModal({
-                            isOpen: true,
-                            id: job._id,
-                            name: job.title
-                          })}
+                          onClick={() =>
+                            setDeleteModal({
+                              isOpen: true,
+                              id: job._id,
+                              name: job.title,
+                            })
+                          }
                           className="text-red-600 hover:text-red-900"
                         >
                           <Trash2 className="h-4 w-4 inline" />

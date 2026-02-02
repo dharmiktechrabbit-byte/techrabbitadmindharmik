@@ -223,7 +223,6 @@ function CreateBlog() {
         <h2 className="text-xl font-bold text-gray-900 mb-6">
           Create Blog Post
         </h2>
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
@@ -459,17 +458,17 @@ function CreateBlog() {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button 
               type="submit" 
-              className="btn-primary"
+              className="btn-primary w-full sm:w-auto"
               onClick={() => setSubmitStatus("PUBLISHED")}
             >
               Publish Blog
             </button>
             <button 
               type="submit" 
-              className="btn-secondary"
+              className="btn-secondary w-full sm:w-auto"
               onClick={() => setSubmitStatus("DRAFT")}
             >
               Save as Draft
@@ -484,15 +483,15 @@ function CreateBlog() {
         transition={{ delay: 0.1 }}
         className="card"
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <h2 className="text-xl font-bold text-gray-900">Blog Posts</h2>
-          <div className="relative">
+          <div className="relative w-full md:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full md:w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="Search blogs..."
             />
           </div>

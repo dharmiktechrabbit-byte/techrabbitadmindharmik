@@ -42,9 +42,14 @@ function Dashboard() {
       value: "0",
       change: "+0",
       icon: TrendingUp,
-      color: "bg-[#25b485]",
     },
   ]);
+
+  const [dashboardCardData, setDashboardCardData] = useState({
+    totalViews: 0,
+    totalComments: 0, // Placeholder for now
+    activeUsers: 0,    // Placeholder for now
+  });
 
   const [recentActivities, setRecentActivities] = useState([]);
 
@@ -89,6 +94,12 @@ function Dashboard() {
           color: "bg-[#25b485]",
         },
       ]);
+
+      setDashboardCardData({
+        totalViews: cards?.totalViews?.value || 0,
+        totalComments: 234, // Keep as placeholder or update if desired
+        activeUsers: 1234,  // Keep as placeholder or update if desired
+      });
     } catch (error) {
       console.log("Dashboard Summary Error:", error);
     }
@@ -244,34 +255,14 @@ function Dashboard() {
                   <Eye className="h-5 w-5 text-gray-400" />
                   <span className="text-sm text-gray-600">Page Views</span>
                 </div>
-                <span className="text-sm font-bold text-gray-900">12,458</span>
+                <span className="text-sm font-bold text-gray-900">{dashboardCardData.totalViews.toLocaleString()}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-gray-400" />
-                  <span className="text-sm text-gray-600">Comments</span>
-                </div>
-                <span className="text-sm font-bold text-gray-900">234</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-gray-400" />
-                  <span className="text-sm text-gray-600">Active Users</span>
-                </div>
-                <span className="text-sm font-bold text-gray-900">1,234</span>
-              </div>
+             
+             
             </div>
           </div>
 
-          <div className="card bg-[linear-gradient(135deg,#22d3ee,#2dd4bf,#34d399)] text-white">
-            <h3 className="text-lg font-bold mb-2">Need Help?</h3>
-            <p className="text-sm text-primary-50 mb-4">
-              Check out our documentation or contact support for assistance.
-            </p>
-            <button className="bg-white text-[#25b485] px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors">
-              View Docs
-            </button>
-          </div>
+        
         </motion.div>
       </div>
     </div>

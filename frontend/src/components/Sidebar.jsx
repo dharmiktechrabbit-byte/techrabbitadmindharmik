@@ -10,19 +10,17 @@ import {
   Plus,
   Tags,
   BookOpen,
+  X,
 } from "lucide-react";
 import logo from "../assets/logo.png";
 
-function Sidebar() {
+function Sidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // ✅ clear auth
     localStorage.removeItem("token");
-    localStorage.removeItem("admin"); // if you stored admin data
-    localStorage.clear(); // optional (remove if you store other keys)
-
-
+    localStorage.removeItem("admin");
+    localStorage.clear();
     navigate("/signin");
   };
 
@@ -64,12 +62,24 @@ function Sidebar() {
   ];
 
   return (
-    <div className="h-screen w-64 bg-[#f7f7f7] border-r border-gray-200 fixed left-0 top-0 flex flex-col">
-      <div className="h-16 flex items-center px-6 border-b border-gray-200">
-        <img src={logo} alt="Tech Rabbit" className="h-10 w-10" />
-        <span className="ml-3 text-xl font-bold text-gray-900">
-          Tech Rabbit
-        </span>
+    <div 
+      className={`h-screen w-64 bg-[#f7f7f7] border-r border-gray-200 fixed left-0 top-0 flex flex-col z-50 transition-transform duration-300 md:translate-x-0 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
+      <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
+        <div className="flex items-center">
+          <img src={logo} alt="Tech Rabbit" className="h-10 w-10" />
+          <span className="ml-3 text-xl font-bold text-gray-900">
+            Tech Rabbit
+          </span>
+        </div>
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="md:hidden p-2 hover:bg-gray-100 rounded-lg text-gray-500"
+        >
+          <X className="h-5 w-5" />
+        </button>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-6 px-3">
@@ -155,3 +165,4 @@ function Sidebar() {
 }
 
 export default Sidebar;
+

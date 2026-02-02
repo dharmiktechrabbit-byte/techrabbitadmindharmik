@@ -1,7 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import SignIn from './pages/auth/SignIn';
+import TwoFA from './pages/auth/TwoFA';
+
 import AdminLayout from './layouts/AdminLayout';
+
+
 import Dashboard from './pages/dashboard/Dashboard';
 import PortfolioCategories from './pages/portfolio/PortfolioCategories';
 import CreatePortfolio from './pages/portfolio/CreatePortfolio';
@@ -24,6 +28,14 @@ function App() {
             <SignIn />
           </PublicRoute>
         } />
+        <Route path="/verify-2fa" element={
+          <PublicRoute>
+            <TwoFA />
+          </PublicRoute>
+        } />
+
+
+
 
         <Route path="/" element={
           <ProtectedRoute>

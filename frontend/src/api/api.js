@@ -33,6 +33,21 @@ export const loginApi = async (userData) => {
     }
 }
 
+export const resetPasswordApi = async (passwordData) => {
+    try {
+        const response = await api.put("admin/reset-password", passwordData);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw (
+            error?.response?.data?.message ||
+            "Check Network Connection"
+        );
+    }
+}
+
+
+
 //Portfolio Management 
 
 
@@ -475,7 +490,34 @@ export const deleteBlogApi = async (id) => {
     }
 }
 
+export const enable2FAApi = async (userIdData) => {
+    try {
+        const response = await api.post("2fa/enable", userIdData);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw (
+            error?.response?.data?.message ||
+            "Check Network Connection"
+        );
+    }
+}
+
+export const verify2FAApi = async (verifyData) => {
+    try {
+        const response = await api.post("2fa/verify", verifyData);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw (
+            error?.response?.data?.message ||
+            "Check Network Connection"
+        );
+    }
+}
+
 export const updateBlogStatusApi = async (id, status) => {
+
   try {
     const response = await api.patch(`blogs/${id}/status`, { status });
     return response.data;
